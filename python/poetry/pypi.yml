@@ -15,6 +15,7 @@ on:
 jobs:
   publish:
     name: 📦 PyPI (🐍 ${{ input.python-version }})
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@master

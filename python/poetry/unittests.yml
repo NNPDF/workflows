@@ -9,7 +9,10 @@ on:
         description: "Python version used to test and build the package"
 
 jobs:
-  build:
+  test:
+    name: 🔬 Test (🐍 ${{ inputs.python-version }})
+    runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ inputs.python-version }} 🐍
