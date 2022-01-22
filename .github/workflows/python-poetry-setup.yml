@@ -52,3 +52,11 @@ jobs:
         run: poetry install --no-interaction ${{ inputs.poetry-extras }}
       - name: Install task runner
         run: pip install poethepoet
+      - name: Inspect
+        run: |
+          ls -lisah ~
+          echo ${{ github.workspace }}
+          ls -lisah ${{ github.workspace }}
+          echo $PWD
+          ls -lisah $PWD
+          ls -lisah ~/.virtualenvs
