@@ -8,6 +8,11 @@ on:
         default: "3.8"
         required: false
         description: "Python version used to test the package"
+      poetry-extras:
+        type: string
+        required: false
+        description: >
+          Extras to be installed, in poetry format (e.g. "-E extra1 extra2")
 
 jobs:
   test:
@@ -44,7 +49,7 @@ jobs:
         run: poetry install --no-interaction --no-root
         if: steps.cache.outputs.cache-hit != 'true'
       - name: Install project
-        run: poetry install --no-interaction
+        run: poetry install --no-interaction ${{ inputs.poetry-extras }}
       - name: Install task runner
         run: pip install poethepoet
       - name: Lint with pylint
