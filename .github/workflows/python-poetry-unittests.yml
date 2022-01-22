@@ -5,14 +5,9 @@ on:
     inputs:
       python-version:
         type: string
-        default: "3.8"
-        required: false
-        description: "Python version used to test the package"
-      poetry-extras:
-        type: string
-        required: false
+        required: true
         description: >
-          Extras to be installed, in poetry format (e.g. "-E extra1 extra2")
+          Python version used to test the package (for logging purpose only)
 
 jobs:
   test:
@@ -20,38 +15,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          # tags needed for dynamic versioning
-          fetch-depth: 0
-      - name: Set up Python ${{ inputs.python-version }} 🐍
-        id: setup-python
-        uses: actions/setup-python@v1
-        with:
-          python-version: ${{ inputs.python-version }}
-      - name: Install and configure Poetry
-        uses: snok/install-poetry@v1
-        with:
-          virtualenvs-path: ~/.virtualenvs
-          installer-parallel: true
-      - name: Cache Poetry virtualenv
-        uses: actions/cache@v1
-        id: cache
-        with:
-          path: ~/.virtualenvs
-          key: ${{ runner.os }}-py-${{ steps.setup-python.outputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
-      - name: Install version management tool
-        run: |
-          # same poetry env
-          PIP="$(head -n1 $(which poetry) | cut -c 3-) -m pip"
-          ${PIP} install poetry-dynamic-versioning
-      - name: Install dependencies
-        run: poetry install --no-interaction --no-root
-        if: steps.cache.outputs.cache-hit != 'true'
-      - name: Install project
-        run: poetry install --no-interaction ${{ inputs.poetry-extras }}
-      - name: Install task runner
-        run: pip install poethepoet
       - name: Lint with pylint
         run: |
           # Search for actual errors
