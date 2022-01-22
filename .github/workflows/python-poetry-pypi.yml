@@ -1,11 +1,12 @@
 name: deploy
 
 on:
-  workflow-call:
+  workflow_call:
     inputs:
       python-version:
         type: string
         default: "3.8"
+        required: false
         description: "Python version used to test and build the package"
     secrets:
       PYPI_TOKEN:
