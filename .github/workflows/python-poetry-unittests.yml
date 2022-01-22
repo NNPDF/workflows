@@ -16,6 +16,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          # tags needed for dynamic versioning
+          fetch-depth: 0
       - name: Set up Python ${{ inputs.python-version }} 🐍
         id: setup-python
         uses: actions/setup-python@v1

@@ -20,6 +20,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@master
+        with:
+          # tags needed for dynamic versioning
+          fetch-depth: 0
       - name: Setup Python 🐍
         id: setup-python
         uses: actions/setup-python@v2
