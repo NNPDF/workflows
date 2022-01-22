@@ -15,7 +15,7 @@ on:
 
 jobs:
   publish:
-    name: 📦 PyPI (🐍 ${{ input.python-version }})
+    name: 📦 PyPI (🐍 ${{ inputs.python-version }})
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +24,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ input.python-version }}
+          python-version: ${{ inputs.python-version }}
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
