@@ -13,6 +13,11 @@ on:
         required: false
         description: >
           Extras to be installed, in poetry format (e.g. "-E extra1 extra2")
+    secrets:
+      codecov-token:
+        required: true
+        description: >
+          Codecov repository token as a Github secrets
 
 jobs:
   test:
@@ -68,3 +73,4 @@ jobs:
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: true
+          token: ${{ secrets.codecov-token }}
