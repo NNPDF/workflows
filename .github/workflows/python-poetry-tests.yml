@@ -15,7 +15,7 @@ on:
           Extras to be installed, in poetry format (e.g. "-E extra1 extra2")
     secrets:
       codecov-token:
-        required: true
+        required: false
         description: >
           Codecov repository token as a Github secrets
 
