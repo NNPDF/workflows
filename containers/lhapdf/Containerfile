@@ -40,6 +40,7 @@ RUN /bin/bash -c "lhapdf install NNPDF40_nnlo_as_01180 \
                                  ATLASpdf21_T1 \
                                  CT18NNLO \
                                  HERAPDF20_NNLO_EIG \
-                                 MSHT20nnlo_as118"
+                                 MSHT20nnlo_as118 \
+                                 PDF4LHC21_mc"
 
 ENTRYPOINT /bin/bash
