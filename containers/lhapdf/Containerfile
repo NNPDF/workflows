@@ -1,0 +1,46 @@
+FROM docker.io/python:3.10
+
+# create a dedicated user
+RUN /bin/bash -c "apt update; \
+                  apt install -y wget patch autoconf libtool g++ make"
+
+RUN /bin/bash -c "useradd -m me"
+
+USER me
+ENV HOME=/home/me
+WORKDIR $HOME
+
+RUN /bin/bash -c "pip install numpy"
+
+COPY --chown=me packages/lhapdf $HOME/lhapdf
+
+ENV PREFIX=$HOME/.local
+ENV PATH=$PATH:$HOME/.local/bin
+
+RUN /bin/bash -c "cd lhapdf; sh install.sh"
+
+# --------------------------------------------------------- #
+
+FROM docker.io/python:3.10-slim
+
+RUN /bin/bash -c "useradd -m me"
+
+USER me
+ENV HOME=/home/me
+WORKDIR $HOME
+
+ENV PATH=$PATH:$HOME/.local/bin
+ENV LD_LIBRARY_PATH=$HOME/.local/lib
+
+# COPY --from=0 /usr/lib/x86_64-linux-gnu/libquadmath* /usr/lib/x86_64-linux-gnu/
+# COPY --from=0 /usr/lib/x86_64-linux-gnu/libgfortran* /usr/lib/x86_64-linux-gnu/
+COPY --from=0 /home/me/.local/ $HOME/.local
+RUN /bin/bash -c "lhapdf install NNPDF40_nnlo_as_01180 \
+                                 ABMP16_5_nnlo \
+                                 ATLASpdf21_T1 \
+                                 CT18NNLO \
+                                 HERAPDF20_NNLO_EIG \
+                                 MSHT20nnlo_as118 \
+                                 PDF4LHC21_mc"
+
+ENTRYPOINT /bin/bash
