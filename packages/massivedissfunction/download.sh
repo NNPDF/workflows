@@ -1,0 +1,4 @@
+URL=$1
+TARBALL=$2
+
+wget $URL -O $TARBALL

@@ -1,0 +1,84 @@
+diff --git a/Routines/initevol.f b/Routines/initevol.f
+index 43dcf7d..d993276 100644
+--- a/Routines/initevol.f
++++ b/Routines/initevol.f
+@@ -21,7 +21,8 @@
+ * =====================================================================
+ *
+ *
+-       SUBROUTINE INITEVOL (IPAR)
++       SUBROUTINE INITEVOL (IPAR, MYIMODEV, MYNPORD, MYIVFNS, MYNFF, 
++     1            MYFR2)
+ * 
+        IMPLICIT DOUBLE COMPLEX (A - Z)
+        INTEGER IPAR, NINTM, NINTF, NI, NPTS, NDIM, NMAX, IFAST, IMODEV, 
+@@ -33,6 +34,8 @@
+        DOUBLE PRECISION PI, EMC, ZETA, CF, CA, TR, FR2, LOGFR, C, PHI
+        DOUBLE PRECISION WN(NDIM), DOWN(NINTM), DOWNF(NINTF), UP(NINTM), 
+      1                  ZS(NPTS),  WZ(NPTS)
++       INTEGER MYIMODEV, MYNPORD, MYIVFNS, MYNFF
++       DOUBLE PRECISION MYFR2
+ *
+ * ---------------------------------------------------------------------
+ *
+@@ -115,12 +118,14 @@
+ * ..Some default settings of the external initialization parameters
+ *   (standard-speed iterated VFNS evolution at NLO for mu_f/mu_r = 1)
+ *
++
++* Pass values from input
+        IFAST  = 0
+-       IVFNS  = 1
+-       NFF    = 4
+-       IMODEV = 1
+-       NPORD  = 1
+-       FR2    = 1.D0
++       IVFNS  = MYIVFNS 
++       NFF    = MYNFF
++       IMODEV = MYIMODEV
++       NPORD  = MYNPORD 
++       FR2    = MYFR2
+ *
+ * ..Override these values by reading the file  usrinit.dat (for IPAR=1)
+ *    or by calling the subroutine  USRINIT (for IPAR=2)
+diff --git a/Routines/initinp.f b/Routines/initinp.f
+index 680208c..821f751 100644
+--- a/Routines/initinp.f
++++ b/Routines/initinp.f
+@@ -22,12 +22,14 @@
+ * =====================================================================
+ *
+ *
+-       SUBROUTINE INITINP (IPAR)
++       SUBROUTINE INITINP (IPAR, ASI, Q20, MC2, MB2, MT2)
+ * 
+        IMPLICIT DOUBLE PRECISION (A - Z)
+        INTEGER IPAR, IVFNS, NFF, NF, NFORM, IMOMIN, ISSIMP
+        DIMENSION PUV(6), PDV(6), PLM(6), PLP(6), PSM(6), PSP(6), PGL(6)
+        PARAMETER ( PI = 3.1415 92653 58979 D0 )
++       DOUBLE PRECISION  ASI, M20, MC2, MB2, MT2, Q20
++
+ *
+ * ---------------------------------------------------------------------
+ *
+@@ -48,14 +50,15 @@
+ *
+ * ...Initial scale  M20 = M_0^2 (in GeV^2)  and  ASI = alpha_s(M_0^2)
+ *
+-       M20 = 2.D0
+-       ASI = 0.35000 
++* Read these values from input
++       M20 = Q20
++c       ASI = 0.35000 
+ *
+ * ...The heavy quark masses squared
+ *
+-       MC2 = 2.00001D0
+-       MB2 = 20.25D0
+-       MT2 = 3.0625D4
++c       MC2 = 2.00001D0
++c       MB2 = 20.25D0
++c       MT2 = 3.0625D4
+ *
+ * ...Flags for the initial parton distributions
+ *

@@ -1,0 +1,25 @@
+diff --git a/nnpdf-driver.f b/nnpdf-driver.f
+index adac988..82bca87 100644
+--- a/nnpdf-driver.f
++++ b/nnpdf-driver.f
+@@ -364,4 +364,21 @@
+       RETURN 
+       END                                           
+ 
++* -----------------------------------------------
++***********************************************
++*    PDFsetbyName(LHAPDFfile)
++*		dummy function to call LHAPDF
++*		Added by GM 
++*
++************************************************
++
++      subroutine mkPDF(LHAPDFfile, n)
++      
++      character*100 LHAPDFfile
++      integer n
++      call InitPDFsetbyName(LHAPDFfile)
++      call InitPDF(n)
++      
++      return
++      end
