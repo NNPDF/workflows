@@ -13,11 +13,6 @@ on:
         required: false
         description: >
           Extras to be installed, in poetry format (e.g. "-E extra1 extra2")
-      container-image:
-        type: string
-        required: false
-        description: >
-          Docker container image to be used
     secrets:
       codecov-token:
         required: false
@@ -28,8 +23,6 @@ jobs:
   test:
     name: 🔬 Test (🐍 ${{ inputs.python-version }})
     runs-on: ubuntu-latest
-    container:
-      image: ${{ inputs.container-image }}
 
     steps:
       - uses: actions/checkout@v2
