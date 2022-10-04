@@ -1,0 +1,80 @@
+!    -*- f90 -*-
+! Note: the context of this file is case sensitive.
+
+python module pegasus ! in 
+    interface  ! in :pegasus
+        subroutine initevol(ipar, myimodev, mynpord, myivfns, mynff, myfr2 ) ! in :pegasus:Routines/initevol.f
+            integer, intent(hide) :: ipar=3 
+            integer intent(in) :: myimodev
+            integer intent(in) :: mynpord
+            integer intent(in) :: myivfns
+            integer intent(in) :: mynff
+            double precision intent(in) :: myfr2
+            !! integer optional,intent(in) :: naord = npord
+        end subroutine initevol
+        subroutine initinp(ipar, asi, q20, mc2, mb2, mt2) ! in :pegasus:Routines/initinp.f
+            integer, intent(hide) :: ipar=3 
+            !! integer intent(in) :: ivfns
+            !! integer intent(in) :: nff
+            !! double precision intent(in) :: logfr
+            double precision intent(in) :: asi
+            double precision intent(in) :: q20
+            !! double precision intent(in) :: asc
+            double precision intent(in) :: mc2
+            !! double precision intent(in) :: asb
+            double precision intent(in) :: mb2
+            !! double precision intent(in) :: ast
+            double precision intent(in) :: mt2
+        end subroutine initinp
+        subroutine xparton(pdfx, asout, x, m2, l1, l2, ipstd) ! in :pegasus:Routines/xparton.f
+            integer, intent(hide) :: ipstd=1 
+            double precision dimension(13), intent(out) :: pdfx
+            double precision intent(out) :: asout
+            double precision intent(in) :: x
+            double precision intent(in) :: m2
+            integer intent(in) :: l1
+            integer intent(in) :: l2
+            !! integer intent(in) :: nff
+            !! integer intent(in) :: ivfns
+            !! double precision intent(in) :: logfr
+            !! double precision intent(in) :: as0
+            !! double precision intent(in) :: m20
+            !! double precision intent(in) :: asc
+            !! double precision intent(in) :: m2c
+            !! double precision intent(in) :: asb
+            !! double precision intent(in) :: m2b
+            !! double precision intent(in) :: ast
+            !! double precision intent(in) :: m2t
+        end subroutine xparton
+        subroutine betafct ! in :pegasus:Routines/betafct.f
+            double precision :: cf
+            double precision :: ca
+            double precision :: tr
+            double precision dimension(4) :: beta0
+            double precision dimension(4) :: beta1
+            double precision dimension(4) :: beta2
+            double precision dimension(4) :: beta3
+            common /colour/ cf,ca,tr
+            common /beta/ beta0,beta1,beta2,beta3
+        end subroutine betafct
+        function as(r2,r20,as0,nf) ! in :pegasus:Routines/asrgkt.f
+            double precision :: r2
+            double precision :: r20
+            double precision :: as0
+            integer :: nf
+            integer :: naord
+            integer :: nastps
+            double precision dimension(4) :: beta0
+            double precision dimension(4) :: beta1
+            double precision dimension(4) :: beta2
+            double precision dimension(4) :: beta3
+            double precision :: as
+            common /aspar/ naord,nastps
+            common /beta/ beta0,beta1,beta2,beta3
+            !! fortranname as
+        end function as
+    end interface 
+end python module pegasus
+
+! This file was auto-generated with f2py (version:2).
+! See http://cens.ioc.ee/projects/f2py2e/

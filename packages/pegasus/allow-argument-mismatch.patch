@@ -1,0 +1,10 @@
+diff --git a/Routines/G77-obj b/Routines/G77-obj
+index 2793aeb..d9eb59c 100644
+--- a/Routines/G77-obj
++++ b/Routines/G77-obj
+@@ -1,4 +1,4 @@
+-g77 -O2 -c \
++g77 -O2 -c -fallow-argument-mismatch \
+ \
+ initevol.f \
+ betafct.f \

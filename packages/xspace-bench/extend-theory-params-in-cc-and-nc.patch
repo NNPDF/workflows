@@ -1,0 +1,558 @@
+diff --git a/Makefile b/Makefile
+index 73b7d2d..836fa28 100644
+--- a/Makefile
++++ b/Makefile
+@@ -14,7 +14,7 @@ all: rmxeq mkxeq
+ 
+ # main programs and modules to be compiled 
+ 
+-MAIN = test fkcheck
++MAIN = test #fkcheck
+ 
+ MAINROUTINES = dis_xsec nc_dis cc_dis
+ SUBROUTINES  = dgauss xcoeffunc_cc xcoeffunc_nc xcoeffunc_cc_wrp xcoeffunc_nc_wrp \
+diff --git a/src/cc_dis.f b/src/cc_dis.f
+index 268e072..a076548 100644
+--- a/src/cc_dis.f
++++ b/src/cc_dis.f
+@@ -1,10 +1,17 @@
++!!! 
++!!!   Added by GM. Pass the constant values as input and fix F3 convention.
++!!!
++
+ ************************************************************************
+ *
+ *     x-space computation of CC HQ structure functions
+ *
+ ************************************************************************
++!!!      SUBROUTINE CC_DIS(X,Q2,RAP,SCHEME,PTO,PDFSET,TARGET,PROJ,
++!!!     1                  F2,F3,FL,SIGMA)
++
+       SUBROUTINE CC_DIS(X,Q2,RAP,SCHEME,PTO,PDFSET,TARGET,PROJ,
+-     1                  F2,F3,FL,SIGMA)
++     1                  GF,MW,CKM,AS,QMS,FONLLDAMP,F2,F3,FL,SIGMA)
+ *
+       IMPLICIT NONE
+ *
+@@ -158,17 +165,36 @@
+       PARAMETER(DY=1.D-5)
+       PARAMETER(PI=3.14159265358979d0)
+       PARAMETER(MN=0.9389d0)
+-      PARAMETER(MW=80.403d0)
+-      PARAMETER(GF=1.16637D-5)
+       PARAMETER(CONV=3.893793D10)
+-      PARAMETER(V_UD=0.97428d0,V_US=0.22530d0)
+-      PARAMETER(V_CD=0.2256d0,V_CS=0.97334d0)
+-      PARAMETER(V_UB=0.003470d0,V_CB=0.041000d0)
+-      PARAMETER(V_TD=0.00862d0,V_TS=0.04030d0,V_TB=0.999152d0)
++!!!      PARAMETER(MW=80.403d0)
++!!!      PARAMETER(GF=1.16637D-5)
++!!!      PARAMETER(V_UD=0.97428d0,V_US=0.22530d0)
++!!!      PARAMETER(V_CD=0.2256d0,V_CS=0.97334d0)
++!!!      PARAMETER(V_UB=0.003470d0,V_CB=0.041000d0)
++!!!      PARAMETER(V_TD=0.00862d0,V_TS=0.04030d0,V_TB=0.999152d0)
++
+ **
+ *     Output Variables
+ *
+       DOUBLE PRECISION F2(3:7),F3(3:7),FL(3:7),SIGMA(3:7)
++
++
++!!!   Added by GM. Pass the constant values as input. 
++      DOUBLE PRECISION CKM(1:9)
++      DOUBLE PRECISION AS
++      DOUBLE PRECISION QMS(4:6)
++      INTEGER FONLLDAMP
++
++      V_UD = CKM(1)
++      V_US = CKM(2)
++      V_UB = CKM(3)
++      V_CD = CKM(4)
++      V_CS = CKM(5)
++      V_CB = CKM(6)
++      V_TD = CKM(7)
++      V_TS = CKM(8)
++      V_TB = CKM(9)
++  
+ *
+ *     Beta function coefficients
+ *
+@@ -272,20 +298,33 @@
+ *
+       IREP = 0
+       CALL InitPDF(IREP)
+-*
+-*     Get alphas from LHAPDF
+-*
+-      ASQ = alphasPDF(dsqrt(Q2)) / ( 4d0 * PI )
+-*
+-*     Get heavy quark thresholds from LHAPDF
+-*
++
++!!!
++!!!     get alphas at Q2 from the input
++!!!     else get alphas from LHAPDF
++!!!
++      IF(AS.EQ.0.0)THEN
++         ASQ = alphasPDF(dsqrt(Q2)) / ( 4d0 * PI )
++      ELSE
++         ASQ = AS / ( 4d0 * PI )
++      ENDIF
++
++!!!
++!!!     Get heavy quark thresholds from input 
++!!!
+       DO I=4,6
+-         CALL GetQmass(I,QTH(I))
++!!!         CALL GetQmass(I,QTH(I))
++         QTH(I) = QMS(I)
++         
+          Q2TH(I) = QTH(I)**2d0
+-         IF(Q2.GT.Q2TH(I))THEN
+-            DAMP(I) = ( 1d0 - Q2TH(I) / Q2 )**2d0
++         IF(FONLLDAMP.EQ.1)THEN
++            IF(Q2.GT.Q2TH(I))THEN
++                  DAMP(I) = ( 1d0 - Q2TH(I) / Q2 )**2d0
++            ELSE
++                  DAMP(I) = 0d0
++            ENDIF
+          ELSE
+-            DAMP(I) = 0d0
++            DAMP(I) = 1d0
+          ENDIF
+       ENDDO
+ *
+@@ -478,7 +517,9 @@
+ *
+ *     Charm contribution evaluated only for energies over the threshold
+ *
++
+       IF(Q2.LT.Q2H) GOTO 200
++      
+ *
+ *     In case GM scheme is chosen
+ *
+@@ -517,6 +558,13 @@
+       LO1 = LO
+       LO2 = LO
+       LO3 = LO
++
++!!!   Fix F3 LO 
++      IF(VFNS.EQ."FFNS")THEN
++            LO3 = LO3 * LAMBDA
++      ENDIF
++!!!   end
++
+       IF(VFNS.EQ."ZMVN")THEN
+          LO1 = LO1 + 2d0 * ( V_CD2 + V_CS2 ) * XC(Y,Q)
+          LO2 = LO2 + 2d0 * ( V_CD2 + V_CS2 ) * XC(Y,Q)
+@@ -643,6 +691,13 @@
+       NLO1 = NLOG1 + NLOQ1
+       NLO2 = NLOG2 + NLOQ2
+       NLO3 = NLOG3 + NLOQ3
++
++!!!   Fix F3 NLO 
++      IF(VFNS.EQ."FFNS")THEN
++            NLO3 = NLO3 * LAMBDA
++      ENDIF
++!!!   end
++
+ *
+       IF(VFNS.EQ."FFNS")THEN
+          IF(HQMASS.EQ.1)THEN
+@@ -710,8 +765,10 @@
+ *
+ *     Bottom contribution evaluated only for energies over the threshold
+ *
+-      IF(Q2.LT.Q2H) GOTO 200
+-*
++
++      IF(Q2.LT.Q2H) GOTO 200 
++
++* 
+ *     In case GM scheme is chosen
+ *
+       IGM = 1
+@@ -748,6 +805,13 @@
+       LO1 = LO
+       LO2 = LO
+       LO3 = LO
++
++!!!   Fix F3 LO 
++      IF(VFNS.EQ."FFNS")THEN
++            LO3 = LO3 * LAMBDA
++      ENDIF
++!!!   end
++
+       IF(VFNS.EQ."ZMVN")THEN
+          LO1 = LO1 + 2d0 * ( V_UB2 + V_CB2 ) * XB(Y,Q) 
+      1       + 2d0 * V_CB2 * XC(Y,Q)
+@@ -880,6 +944,12 @@
+       NLO1 = NLOG1 + NLOQ1
+       NLO2 = NLOG2 + NLOQ2
+       NLO3 = NLOG3 + NLOQ3
++
++!!!   Fix F3 NLO 
++      IF(VFNS.EQ."FFNS")THEN
++            NLO3 = NLO3 * LAMBDA
++      ENDIF
++!!!   end
+ *
+       F1B = LO1 + 2d0 * ASQ * NLO1
+       F2B = LO2 + 2d0 * ASQ * NLO2
+@@ -925,7 +995,10 @@
+ *
+ *     Top contribution evaluated only for energies over the threshold
+ *
++
++
+       IF(Q2.LT.Q2H) GOTO 200
++
+ *
+ *     In case GM scheme is chosen
+ *
+@@ -964,6 +1037,13 @@
+       LO1 = LO
+       LO2 = LO
+       LO3 = LO
++
++!!!   Fix F3 LO 
++      IF(VFNS.EQ."FFNS")THEN
++            LO3 = LO3 * LAMBDA
++      ENDIF
++!!!   end
++
+       IF(VFNS.EQ."ZMVN")THEN
+          LO1 = LO1 + 2d0 * ( V_TD2 + V_TS2 + V_TB2 ) * XT(Y,Q)
+      1       + 2d0 * V_TB2 * XB(Y,Q)
+@@ -1111,6 +1191,12 @@
+       NLO1 = NLOG1 + NLOQ1
+       NLO2 = NLOG2 + NLOQ2
+       NLO3 = NLOG3 + NLOQ3
++
++!!!   Fix F3 NLO 
++      IF(VFNS.EQ."FFNS")THEN
++            NLO3 = NLO3 * LAMBDA
++      ENDIF
++!!!   end
+ *
+       F1T = LO1 + 2d0 * ASQ * NLO1
+       F2T = LO2 + 2d0 * ASQ * NLO2
+@@ -1149,27 +1235,34 @@
+ *
+ *     Gather pieces
+ *
+- 200  IF(Q2.GT.Q2TH(6))THEN
++
++ 200   IF(Q2.GT.Q2TH(6))THEN
++            F2P = F2L + F2C + F2B + F2T
++            F3P = F3L + F3C + F3B + F3T
++            FLP = FLL + FLC + FLB + FLT
++            SIGMAP = SIGMAL + SIGMAC + SIGMAB + SIGMAT
++      ELSEIF(Q2.GE.Q2TH(5))THEN
++            F2P = F2L + F2C + F2B
++            F3P = F3L + F3C + F3B
++            FLP = FLL + FLC + FLB
++            SIGMAP = SIGMAL + SIGMAC + SIGMAB
++      ELSEIF(Q2.GE.Q2TH(4))THEN
++            F2P = F2L + F2C
++            F3P = F3L + F3C
++            FLP = FLL + FLC
++            SIGMAP = SIGMAL + SIGMAC
++      ELSEIF(Q2.LE.Q2TH(4))THEN
++            F2P = F2L
++            F3P = F3L
++            FLP = FLL
++            SIGMAP = SIGMAL
++      ELSE
+          F2P = F2L + F2C + F2B + F2T
+          F3P = F3L + F3C + F3B + F3T
+          FLP = FLL + FLC + FLB + FLT
+          SIGMAP = SIGMAL + SIGMAC + SIGMAB + SIGMAT
+-      ELSEIF(Q2.GT.Q2TH(5))THEN
+-         F2P = F2L + F2C + F2B
+-         F3P = F3L + F3C + F3B
+-         FLP = FLL + FLC + FLB
+-         SIGMAP = SIGMAL + SIGMAC + SIGMAB
+-      ELSEIF(Q2.GT.Q2TH(4))THEN
+-         F2P = F2L + F2C
+-         F3P = F3L + F3C
+-         FLP = FLL + FLC
+-         SIGMAP = SIGMAL + SIGMAC
+-      ELSEIF(Q2.LT.Q2TH(4))THEN
+-         F2P = F2L
+-         F3P = F3L
+-         FLP = FLL
+-         SIGMAP = SIGMAL
+       ENDIF
++
+ *
+ *     Put results in vectors
+ *
+diff --git a/src/dis_xsec.f b/src/dis_xsec.f
+index 72eaacf..fce127d 100644
+--- a/src/dis_xsec.f
++++ b/src/dis_xsec.f
+@@ -17,17 +17,48 @@
+       CHARACTER*53 PDFSET
+       CHARACTER*9  TARGET
+       CHARACTER*12 PROJ
++
+ **
+ *     Output Variables
+ *
+       DOUBLE PRECISION F2(3:7),F3(3:7),FL(3:7),SIGMA(3:7)
+ *
++
++!!!   Added by GM, pass the constant values here.
++      DOUBLE PRECISION CKM(1:9)
++      DOUBLE PRECISION MW, MZ, SW, GF
++      DOUBLE PRECISION AS
++      DOUBLE PRECISION QMS(4:6)
++      INTEGER FONLLDAMP
++
++!!!   Added by GM, pass the constant values here.
++      SW = 0.232d0
++      MZ = 91.2d0
++      MW = 80.403d0
++      GF = 1.16637d-5
++
++      CKM(1) = 0.97428d0    !V_UD
++      CKM(2) = 0.22530d0    !V_US
++      CKM(3) = 0.003470d0   !V_UB
++      CKM(4) = 0.2256d0     !V_CD
++      CKM(5) = 0.97334d0    !V_CS
++      CKM(6) = 0.041000d0   !V_CB
++      CKM(7) = 0.00862d0    !V_TD
++      CKM(8) = 0.04030d0    !V_TS
++      CKM(9) = 0.999152d0   !V_TB
++
++      QMS(4) = 2d0
++      QMS(5) = 4d0
++      QMS(6) = 173.07d0
++      AS = 0.0
++      FONLLDAMP = 1 
++
+       IF(PROC.EQ."EM".OR.PROC.EQ."NC")THEN
+          CALL NC_DIS(X,Q2,Y,PROC,SCHEME,PTO,PDFSET,TARGET,PROJ,
+-     1               F2,F3,FL,SIGMA)
++     1               MZ,SW,AS,QMS,FONLLDAMP,F2,F3,FL,SIGMA)
+       ELSEIF(PROC.EQ."CC")THEN
+          CALL CC_DIS(X,Q2,Y,SCHEME,PTO,PDFSET,TARGET,PROJ,
+-     1               F2,F3,FL,SIGMA)
++     1                GF,MW,CKM,AS,QMS,FONLLDAMP,F2,F3,FL,SIGMA)
+       ELSE
+          WRITE(6,*) "In dis_xsec.f:"
+          WRITE(6,*) "Invalid process, PROC =",PROC
+diff --git a/src/nc_dis.f b/src/nc_dis.f
+index 020bcd0..73344a1 100644
+--- a/src/nc_dis.f
++++ b/src/nc_dis.f
+@@ -1,10 +1,16 @@
++!!! 
++!!!   Added by GM. Pass the constant values as input. 
++!!!
++
+ ************************************************************************
+ *
+ *     x-space computation of NC HQ structure functions
+ *
+ ************************************************************************
++!!!      SUBROUTINE NC_DIS(X,Q2,RAP,SCHEME,PTO,PDFSET,TARGET,PROJ,
++!!!     1                  F2,F3,FL,SIGMA)
+       SUBROUTINE NC_DIS(X,Q2,Y,PROC,SCHEME,PTO,PDFSET,TARGET,PROJ,
+-     1                  F2,F3,FL,SIGMA)
++     1                  MZ,SW,AS,QMS,FONLLDAMP,F2,F3,FL,SIGMA)
+ *
+       IMPLICIT NONE
+ *
+@@ -26,6 +32,7 @@
+       CHARACTER*53 PDFSET
+       CHARACTER*9  TARGET
+       CHARACTER*12 PROJ
++
+ **
+ *     Internal Variables
+ *
+@@ -240,12 +247,19 @@
+ 
+       PARAMETER(EPS = 1.D-7)
+       PARAMETER(PI  = 3.14159265358979D0)
+-      PARAMETER(SW  = 0.232D0)
+-      PARAMETER(MZ  = 91.2D0)
++!!!      PARAMETER(SW  = 0.232D0)
++!!!      PARAMETER(MZ  = 91.2D0)
++
+ **
+ *     Output Variables
+ *
+       DOUBLE PRECISION F2(3:7),F3(3:7),FL(3:7),SIGMA(3:7)
++
++!!!   Added by GM. Pass the constant values as input. 
++      DOUBLE PRECISION AS
++      DOUBLE PRECISION QMS(4:6)
++      INTEGER FONLLDAMP
++
+ *
+ *     Beta function coefficients
+ *
+@@ -386,20 +400,31 @@
+ *
+       IREP = 0
+       CALL InitPDF(IREP)
+-*
+-*     Get alphas from LHAPDF
+-*
+-      ASQ = alphasPDF(dsqrt(Q2)) / ( 4d0 * PI )
+-*
+-*     Get heavy quark thresholds from LHAPDF
+-*
++!!!
++!!!     get alphas at Q2 from the input
++!!!     else get alphas from LHAPDF
++!!!
++      IF(AS.EQ.0.0)THEN   
++         ASQ = alphasPDF(dsqrt(Q2)) / ( 4d0 * PI )
++      ELSE
++         ASQ = AS / ( 4d0 * PI )
++      ENDIF
++!!!
++!!!     Get heavy quark thresholds from input 
++!!!
+       DO I=4,6
+-         CALL GetQmass(I,QTH(I))
++!!!         CALL GetQmass(I,QTH(I))
++         QTH(I) = QMS(I)
++         
+          Q2TH(I) = QTH(I)**2d0
+-         IF(Q2.GT.Q2TH(I))THEN
+-            DAMP(I) = ( 1d0 - Q2TH(I) / Q2 )**2d0
++         IF(FONLLDAMP.EQ.1)THEN
++            IF(Q2.GT.Q2TH(I))THEN
++                  DAMP(I) = ( 1d0 - Q2TH(I) / Q2 )**2d0
++            ELSE
++                  DAMP(I) = 0d0
++            ENDIF
+          ELSE
+-            DAMP(I) = 0d0
++            DAMP(I) = 1d0
+          ENDIF
+       ENDDO
+ *
+@@ -463,7 +488,7 @@
+ *
+       INTEG3(1) = DQ(1) * ( DGAUSS(XDM_XC3Q_UNPLUS_NC,A,B,EPS)
+      1          +   DGAUSS(XDM_XC3Q_PLUS_NC,A,B,EPS) 
+-     2          - PLUS_TERM3 * XDM(X,Q) )
++     2          + ( CONST - PLUS_TERM3 ) * XDM(X,Q) )
+       INTEG3(2) = DQ(2) * ( DGAUSS(XUM_XC3Q_UNPLUS_NC,A,B,EPS)
+      1          +   DGAUSS(XUM_XC3Q_PLUS_NC,A,B,EPS) 
+      2          + ( CONST - PLUS_TERM3 ) * XUM(X,Q) )
+@@ -501,6 +526,8 @@
+       ENDIF
+ *
+       VFNS = VFNS_TMP
++
++
+ *
+ *     In case GM scheme is chosen
+ *
+@@ -524,8 +551,8 @@
+          LO2T = BQ(6) * XTP(X,Q)
+       ELSE
+          LO2C = 0d0
+-         LO2C = 0d0
+-         LO2C = 0d0
++         LO2B = 0d0
++         LO2T = 0d0
+       ENDIF
+ *
+       IF(VFNS.EQ."ZMVN")THEN
+@@ -534,8 +561,8 @@
+          LO3T = DQ(6) * XTM(X,Q)
+       ELSE
+          LO3C = 0d0
+-         LO3C = 0d0
+-         LO3C = 0d0
++         LO3B = 0d0
++         LO3T = 0d0
+       ENDIF
+ *
+       LOLC = 0d0
+@@ -692,17 +719,18 @@
+          SIGMAT = F2T - ( Y**2d0 / YP ) * FLT + ( YM / YP ) * F3T
+       ENDIF
+ *
+-      IF(Q2.GT.Q2TH(6))THEN
++
++      IF(Q2.GE.Q2TH(6))THEN
+          F2P = F2L + F2C + F2B + F2T
+          F3P = F3L + F3C + F3B + F3T
+          FLP = FLL + FLC + FLB + FLT
+          SIGMAP = SIGMAL + SIGMAC + SIGMAB + SIGMAT
+-      ELSEIF(Q2.GT.Q2TH(5))THEN
++      ELSEIF(Q2.GE.Q2TH(5))THEN
+          F2P = F2L + F2C + F2B
+          F3P = F3L + F3C + F3B
+          FLP = FLL + FLC + FLB
+          SIGMAP = SIGMAL + SIGMAC + SIGMAB
+-      ELSEIF(Q2.GT.Q2TH(4))THEN
++      ELSEIF(Q2.GE.Q2TH(4))THEN
+          F2P = F2L + F2C
+          F3P = F3L + F3C
+          FLP = FLL + FLC
+@@ -713,6 +741,8 @@
+          FLP = FLL
+          SIGMAP = SIGMAL
+       ENDIF
++
++
+ *
+ *     Put results in vectors
+ *
+diff --git a/test.f b/test.f
+index 4272ba0..8f5f249 100644
+--- a/test.f
++++ b/test.f
+@@ -18,9 +18,9 @@
+       CHARACTER*4  SCHEME
+       CHARACTER*53 PDFSET
+       CHARACTER*9  TARGET
+-      CHARACTER*8  PROJ
++      CHARACTER*12  PROJ
+ *
+-      Q2  = 10d0
++      Q2  = 90d0
+       Y   = 0.5d0
+       XIN = 1d-5
+       XFI = 1d-1
+@@ -28,7 +28,8 @@
+ *
+       PTO    = 1
+       SCHEME = "GMVN"
+-      PDFSET = "toyLH_NLO.LHgrid"
++      !PDFSET = "toyLH_NLO.LHgrid"
++      PDFSET = "CT14llo_NF6"
+ *
+ c      PROJ   = "ELECTRON"
+ c      TARGET = "PROTON"
+@@ -60,7 +61,7 @@ c 44   FORMAT(F7.5,1X,F8.4,1X,F7.5,1X,7(F9.6,1X))
+ *
+       PROJ   = "ELECTRON"
+       TARGET = "PROTON"
+-      PROC   = "CC"
++      PROC   = "NC"
+ *
+       WRITE(6,*) "   X    ",
+      1           "   Q2    ",
+@@ -76,8 +77,8 @@ c 44   FORMAT(F7.5,1X,F8.4,1X,F7.5,1X,7(F9.6,1X))
+          CALL DIS_XSEC(X,Q2,Y,PROC,SCHEME,PTO,PDFSET,TARGET,PROJ,
+      1                 F2,F3,FL,SIGMA)
+ *
+-C         WRITE(*,45) X,Q2,Y,F2(4),FL(4),F3(4),SIGMA(4)
+-         WRITE(*,45) X,Q2,Y,SIGMA(3),SIGMA(4),SIGMA(7)
++         WRITE(*,45) X,Q2,Y,F2(4),FL(4),F3(4),SIGMA(4)
++c        WRITE(*,45) X,Q2,Y,SIGMA(3),SIGMA(4),SIGMA(7)
+          X = X * DEXP( 1d0 / ( NP - 1d0 ) * DLOG( XFI / XIN ) )
+       ENDDO
+       WRITE(6,*) "   "
