@@ -26,8 +26,8 @@ on:
 
 jobs:
   test:
+    if: ${{ inputs.container-image == '' }}
     name: 🔬 Test (🐍 ${{ inputs.python-version }})
-    if: ${{ inputs.container-image }} == ''
     runs-on: ubuntu-latest
 
     steps:
@@ -82,8 +82,8 @@ jobs:
           token: ${{ secrets.codecov-token }}
 
   test-inside-container:
+    if: ${{ inputs.container-image != '' }}
     name: 🔬 Test inside a container (🐍 ${{ inputs.python-version }})
-    if: ${{ inputs.container-image }} != ''
     runs-on: ubuntu-latest
     container:
       image: ${{ inputs.container-image }}
