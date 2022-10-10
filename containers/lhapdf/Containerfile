@@ -23,6 +23,12 @@ RUN /bin/bash -c "cd lhapdf; sh install.sh"
 
 FROM docker.io/python:3.10-slim
 
+# install further packages to support the workflow
+# curl: required by snok/install-poetry@v1
+# git: required by actions/checkout@v2
+RUN /bin/bash -c "apt update; \ 
+                  apt install -y curl git"
+
 RUN /bin/bash -c "useradd -m me"
 
 USER me
@@ -42,11 +48,5 @@ RUN /bin/bash -c "lhapdf install NNPDF40_nnlo_as_01180 \
                                  HERAPDF20_NNLO_EIG \
                                  MSHT20nnlo_as118 \
                                  PDF4LHC21_mc"
-
-# install further packages to support the workflow
-# curl: required by snok/install-poetry@v1
-# git: required by actions/checkout@v2
-RUN /bin/bash -c "apt update; \ 
-                  apt install -y curl git"
 
 ENTRYPOINT /bin/bash
