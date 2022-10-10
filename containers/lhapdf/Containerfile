@@ -43,4 +43,10 @@ RUN /bin/bash -c "lhapdf install NNPDF40_nnlo_as_01180 \
                                  MSHT20nnlo_as118 \
                                  PDF4LHC21_mc"
 
+# install further packages to support the workflow
+# curl: required by snok/install-poetry@v1
+# git: required by actions/checkout@v2
+RUN /bin/bash -c "apt update; \ 
+                  apt install -y curl git"
+
 ENTRYPOINT /bin/bash
