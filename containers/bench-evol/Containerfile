@@ -1,0 +1,41 @@
+FROM docker.io/python:3.9
+
+# create a dedicated user
+RUN /bin/bash -c "apt update; \
+                  apt install -y wget patch autoconf libtool g++ gfortran make"
+
+RUN /bin/bash -c "useradd -m evol"
+
+USER evol
+ENV HOME=/home/evol
+WORKDIR $HOME
+
+RUN /bin/bash -c "pip install numpy"
+
+COPY --chown=evol packages/lhapdf $HOME/lhapdf
+COPY --chown=evol packages/apfel $HOME/apfel
+COPY --chown=evol packages/qcdnum $HOME/qcdnum
+COPY --chown=evol packages/pegasus $HOME/pegasus
+# TODO: remove this dirty trick
+COPY --chown=evol packages/.backup/ $HOME/.backup
+
+ENV PREFIX=$HOME/.local
+ENV PATH=$PATH:$HOME/.local/bin
+
+RUN /bin/bash -c "cd lhapdf; sh install.sh"
+RUN /bin/bash -c "cd apfel; sh install.sh"
+RUN /bin/bash -c "cd qcdnum; sh install.sh"
+RUN /bin/bash -c "cd pegasus; sh install.sh"
+
+# --------------------------------------------------------- #
+
+FROM docker.io/python:3.9-slim
+
+RUN /bin/bash -c "apt update; \
+                  apt install -y git curl"
+
+ENV LD_LIBRARY_PATH=/usr/local/lib
+
+COPY --from=0 /usr/lib/x86_64-linux-gnu/libquadmath* /usr/lib/x86_64-linux-gnu/
+COPY --from=0 /usr/lib/x86_64-linux-gnu/libgfortran* /usr/lib/x86_64-linux-gnu/
+COPY --from=0 /home/evol/.local/ /usr/local

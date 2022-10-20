@@ -1,0 +1,50 @@
+!    -*- f90 -*-
+! Note: the context of this file is case sensitive.
+
+python module xspace_bench ! in 
+    interface  ! in :xspace_bench
+        subroutine cc_dis(x,q2,rap,scheme,pto,pdfset,target,proj,gf,mw,ckm,as,qms,fonlldamp,f2,f3,fl,sigma) ! in :xspace_bench:src/cc_dis.f
+            double precision intent(in) :: x
+            double precision intent(in) :: q2
+            double precision intent(in) :: rap
+            character*4 intent(in) :: scheme
+            integer intent(in) :: pto
+            character*53 intent(in) :: pdfset
+            character*9 intent(in) :: target
+            character*12 intent(in) :: proj
+            double precision intent(in) :: gf
+            double precision intent(in) :: mw
+            double precision dimension(9), intent(in) :: ckm
+            double precision intent(in) :: as
+            double precision dimension(3), intent(in) :: qms
+            integer intent(in) :: fonlldamp
+            double precision dimension(5), intent(out) :: f2
+            double precision dimension(5), intent(out) :: f3
+            double precision dimension(5), intent(out) :: fl
+            double precision dimension(5), intent(out) :: sigma
+        end subroutine cc_dis
+        subroutine nc_dis(x,q2,y,proc,scheme,pto,pdfset,target,proj,mz,sw,as,qms,fonlldamp,f2,f3,fl,sigma) ! in :xspace_bench:src/nc_dis.f
+            double precision intent(in) :: x
+            double precision intent(in) :: q2
+            double precision intent(in) :: y
+            character*2 intent(in) :: proc
+            character*4  intent(in) :: scheme
+            integer  intent(in) :: pto
+            character*53 intent(in) :: pdfset
+            character*9  intent(in) :: target
+            character*12  intent(in) :: proj
+            double precision intent(in) :: mz
+            double precision intent(in) :: sw
+            double precision intent(in) :: as
+            double precision dimension(3), intent(in) :: qms
+            integer intent(in) :: fonlldamp
+            double precision dimension(5), intent(out) :: f2
+            double precision dimension(5), intent(out) :: f3
+            double precision dimension(5), intent(out) :: fl
+            double precision dimension(5), intent(out) :: sigma
+        end subroutine nc_dis
+    end interface 
+end python module xspace_bench
+
+! This file was auto-generated with f2py (version:2).
+! See http://cens.ioc.ee/projects/f2py2e/

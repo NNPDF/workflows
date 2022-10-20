@@ -1,0 +1,13 @@
+diff --git a/qcdnum/usr/usrparams.f b/qcdnum/usr/usrparams.f
+index d329034..5153c60 100644
+--- a/qcdnum/usr/usrparams.f
++++ b/qcdnum/usr/usrparams.f
+@@ -689,7 +689,7 @@ C--   Check status bits
+ C--   Check jset in range
+       call sqcIlele(subnam,'ISET',0,jset,mset0,' ')
+ C--   Check n in range
+-      call sqcIlele(subnam,'N',13,n,9999)
++      call sqcIlele(subnam,'N',13,n,9999,' ')
+ 
+ C--   Do the work
+       if(jset.eq.0) then

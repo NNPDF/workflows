@@ -1,0 +1,85 @@
+!    -*- f90 -*-
+! Note: the context of this file is case sensitive.
+
+python module FONLLdis ! in 
+    interface  ! in :FONLLdis
+        function asfunc(r2,nfout,ierr) ! in :FONLLdis:usrevol.f
+            double precision intent(in) :: r2
+            integer optional intent( out ) :: nfout = 3
+            double precision intent(out) :: asfunc
+            integer optional intent ( out ) :: ierr = 0
+        end function asfunc
+        subroutine zmstf(mc2,mb2,mt2,alpharef,q2asref,q2,iord,iwhichpdf) ! in :FONLLdis:zmstf.f
+            double precision intent(in) :: mc2
+            double precision intent(in) :: mb2
+            double precision intent(in) :: mt2
+            double precision intent(in) :: alpharef
+            double precision intent(in) :: q2asref
+            double precision intent(in) :: q2
+            integer intent(in) :: iord
+            integer intent(in) :: iwhichpdf
+        end subroutine zmstf
+        function ff2czm(x,q2) ! in :FONLLdis:zmstf.f
+            real*8 intent(in) :: x
+            real*8 intent(in) :: q2
+            real*8 intent(out) :: ff2czm
+        end function ff2czm
+        function ff2lzm(x,q2) ! in :FONLLdis:zmstf.f
+            real*8 intent(in) :: x
+            real*8 intent(in) :: q2
+            real*8 intent(out) :: ff2lzm
+        end function ff2lzm
+        function fflczm(x,q2) ! in :FONLLdis:zmstf.f
+            real*8 intent(in) :: x
+            real*8 intent(in) :: q2
+            real*8 intent(out) :: fflczm
+        end function fflczm
+        function ffllzm(x,q2) ! in :FONLLdis:zmstf.f
+            real*8 intent(in) :: x
+            real*8 intent(in) :: q2
+            real*8 intent(out) :: ffllzm
+        end function ffllzm
+        subroutine f2massive(x,q2i,mcharm,alphaq2,ior,ifor,sf,chc,isin,f2cmass) ! in :FONLLdis:f2massive.f
+            real*8 intent(in) :: x
+            real*8 intent(in) :: q2i
+            real*8 intent(in) :: mcharm
+            real*8 intent(in) :: alphaq2
+            integer intent(in) :: ior
+            integer intent(in) :: ifor
+            character*2 intent(in) :: sf
+            character intent(in) :: chc
+            integer intent(in) :: isin
+            real*8 intent(out) :: f2cmass
+        end subroutine f2massive
+        subroutine initnnpdfwrap(wrapfile,nmem) ! in :FONLLdis:nnpdf-driver.f
+            character*53 intent(in) :: wrapfile
+            integer intent(hide) :: nmem
+        end subroutine initnnpdfwrap
+        subroutine mkpdf(lhapdffile, n) ! in :FONLLdis:nnpdf-driver.f
+            character*100 intent(in) ::lhapdffile 
+            integer intent(in) :: n 
+        end subroutine mkpdf
+        block data vegas0 ! in :FONLLdis:vegas_p.f
+            real*8, optional,dimension(10) :: xl=1.d-3
+            real*8, optional,dimension(10) :: xu=1.d0
+            real*8, optional :: acc=-1.d0
+            integer :: ndim
+            integer, optional :: ncall=10000
+            integer, optional :: itmx=10
+            integer, optional :: nprn=0
+            real*8, optional,dimension(50,10) :: xi=500*1.d0
+            real*8 :: si
+            real*8 :: si2
+            real*8 :: swgt
+            real*8 :: schi
+            integer :: ndo
+            integer :: it
+            real*8, optional :: alph=1.5d0
+            integer, optional :: ndmx=50
+            integer, optional :: mds=1
+        end block data vegas0
+    end interface 
+end python module FONLLdis
+
+! This file was auto-generated with f2py (version:2).
+! See http://cens.ioc.ee/projects/f2py2e/
