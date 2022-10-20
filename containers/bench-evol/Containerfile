@@ -32,7 +32,8 @@ RUN /bin/bash -c "cd pegasus; sh install.sh"
 FROM docker.io/python:3.9-slim
 
 RUN /bin/bash -c "apt update; \
-                  apt install -y git curl"
+                  apt install -y git curl; \
+                  apt install wget"
 
 ENV LD_LIBRARY_PATH=/usr/local/lib
 
