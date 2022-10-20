@@ -33,7 +33,7 @@ FROM docker.io/python:3.9-slim
 
 RUN /bin/bash -c "apt update; \
                   apt install -y git curl; \
-                  apt install wget"
+                  apt install -y wget"
 
 ENV LD_LIBRARY_PATH=/usr/local/lib
 
