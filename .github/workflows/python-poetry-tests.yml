@@ -31,6 +31,8 @@ jobs:
     container: ${{ inputs.container-image }}
 
     steps:
+      - name: Deprecation warning
+        run: echo "::warning ::This branch is deprecated, and will be removed in the near future, check branch 'v2'"
       - uses: actions/checkout@v2
         with:
           # tags needed for dynamic versioning
