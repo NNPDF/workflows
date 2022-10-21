@@ -1,0 +1,110 @@
+diff --git a/Makefile b/Makefile
+index af5d31d..e4b1cbf 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,7 +1,6 @@
+ 
+ # Set Fortran compiler
+-F77= gfortran 
+-
++F77= gfortran -fallow-argument-mismatch
+ 
+ 
+ MAKEFILES= Makefile
+diff --git a/ccdisnlo_asymp.f b/ccdisnlo_asymp.f
+index 65089b7..b208489 100644
+--- a/ccdisnlo_asymp.f
++++ b/ccdisnlo_asymp.f
+@@ -17,7 +17,8 @@ C    * iicbar: bar function (multiplying scale logs) (1), or not (0)
+       real * 8 c2q2,clq2,c2q2m,clq2m,clgm,clgca,clgcf,c2gm,c2gca,c2gcf,
+      1         c2q1,clq1,clq1m,c2q1m,alq2
+       real * 8 pi,ca,cf,tf
+-      parameter (pi=3.141592653589793d0,ca=3d0,cf=4d0/3d0,tf=0.5d0)
++      parameter (pi=3.141592653589793d0,ca=3d0,tf=0.5d0)
++      cf = 4d0/3d0
+ c     Initialization
+       ccdisnlo_asympt = 0d0
+ c     Kinematic variable definition
+diff --git a/cernlib.f b/cernlib.f
+index c053877..4a81ba3 100644
+--- a/cernlib.f
++++ b/cernlib.f
+@@ -208,7 +208,8 @@ C CERN PROGLIB# Z035    ABEND           .VERSION KERNVAX  1.10  811126
+       PARAMETER (NAME = 'DGAUSS')
+       DIMENSION W(12),X(12)
+ 
+-      PARAMETER (Z1 = 1, HF = Z1/2, CST = 5*Z1/1000)
++C      PARAMETER (Z1 = 1, HF = Z1/2, CST = 5*Z1/1000)
++      PARAMETER( Z1 = 1 , HF = 0.5, CST = 0.005 )
+ 
+       DATA X( 1) /9.6028985649753623D-1/, W( 1) /1.0122853629037626D-1/
+       DATA X( 2) /7.9666647741362674D-1/, W( 2) /2.2238103445337447D-1/
+@@ -278,7 +279,8 @@ c       GO TO 99
+       PARAMETER (NAME = 'DGAUSS')
+       DIMENSION W(12),X(12)
+ 
+-      PARAMETER (Z1 = 1, HF = Z1/2, CST = 5*Z1/1000)
++C      PARAMETER (Z1 = 1, HF = Z1/2, CST = 5*Z1/1000)
++      PARAMETER( Z1 = 1 , HF = 0.5, CST = 0.005 )
+ 
+       DATA X( 1) /9.6028985649753623D-1/, W( 1) /1.0122853629037626D-1/
+       DATA X( 2) /7.9666647741362674D-1/, W( 2) /2.2238103445337447D-1/
+ 
+diff --git a/qcdwgtu.f b/qcdwgtu.f
+index 9eda182..1b44374 100644
+--- a/qcdwgtu.f
++++ b/qcdwgtu.f
+@@ -1421,7 +1421,8 @@ C--   End of MB extension
+ 
+       DIMENSION W(12),X(12)
+ 
+-      PARAMETER (Z1 = 1, HF = Z1/2, CST = 5*Z1/1000)
++C      PARAMETER (Z1 = 1, HF = Z1/2, CST = 5*Z1/1000)
++      PARAMETER( Z1 = 1 , HF = 0.5, CST = 0.005 )
+ 
+       DATA X( 1) /9.6028985649753623D-1/, W( 1) /1.0122853629037626D-1/
+       DATA X( 2) /7.9666647741362674D-1/, W( 2) /2.2238103445337447D-1/
+@@ -1511,7 +1512,8 @@ C--   End of MB extension
+ 
+       DIMENSION W(12),X(12)
+ 
+-      PARAMETER (Z1 = 1, HF = Z1/2, CST = 5*Z1/1000)
++C      PARAMETER (Z1 = 1, HF = Z1/2, CST = 5*Z1/1000)
++      PARAMETER( Z1 = 1 , HF = 0.5, CST = 0.005 )
+ 
+       DATA X( 1) /9.6028985649753623D-1/, W( 1) /1.0122853629037626D-1/
+       DATA X( 2) /7.9666647741362674D-1/, W( 2) /2.2238103445337447D-1/
+@@ -1609,7 +1611,8 @@ C--   End of MB extension
+ 
+       DIMENSION W(12),X(12)
+ 
+-      PARAMETER (Z1 = 1, HF = Z1/2, CST = 5*Z1/1000)
++C      PARAMETER (Z1 = 1, HF = Z1/2, CST = 5*Z1/1000)
++      PARAMETER( Z1 = 1 , HF = 0.5, CST = 0.005 )
+ 
+       DATA X( 1) /9.6028985649753623D-1/, W( 1) /1.0122853629037626D-1/
+       DATA X( 2) /7.9666647741362674D-1/, W( 2) /2.2238103445337447D-1/
+@@ -1707,7 +1710,8 @@ C--   End of MB extension
+ 
+       DIMENSION W(12),X(12)
+ 
+-      PARAMETER (Z1 = 1, HF = Z1/2, CST = 5*Z1/1000)
++C      PARAMETER (Z1 = 1, HF = Z1/2, CST = 5*Z1/1000)
++      PARAMETER( Z1 = 1 , HF = 0.5, CST = 0.005 )
+ 
+       DATA X( 1) /9.6028985649753623D-1/, W( 1) /1.0122853629037626D-1/
+       DATA X( 2) /7.9666647741362674D-1/, W( 2) /2.2238103445337447D-1/
+diff --git a/utils.f b/utils.f
+index 335b81e..0ac891e 100644
+--- a/utils.f
++++ b/utils.f
+@@ -484,7 +484,8 @@ C--           .../mathlib/gen/d/gauss64.F and gausscod.inc
+ 
+       DIMENSION W(12),X(12)
+ 
+-      PARAMETER (Z1 = 1, HF = Z1/2, CST = 5*Z1/1000)
++C      PARAMETER (Z1 = 1, HF = Z1/2, CST = 5*Z1/1000)
++      PARAMETER( Z1 = 1 , HF = 0.5, CST = 0.005 )
+ 
+       DATA X( 1) /9.6028985649753623D-1/, W( 1) /1.0122853629037626D-1/
+       DATA X( 2) /7.9666647741362674D-1/, W( 2) /2.2238103445337447D-1/
