@@ -26,21 +26,11 @@ FROM docker.io/python:3.10-slim
 # install further packages to support the workflow
 # curl: required by snok/install-poetry@v1
 # git: required by actions/checkout@v2
+# wget: useful to recursively pull remote resources
 RUN /bin/bash -c "apt update; \ 
                   apt install -y curl git wget"
 
-RUN /bin/bash -c "useradd -m me"
-
-USER me
-ENV HOME=/home/me
-WORKDIR $HOME
-
-ENV PATH=$PATH:$HOME/.local/bin
-ENV LD_LIBRARY_PATH=$HOME/.local/lib
-
-# COPY --from=0 /usr/lib/x86_64-linux-gnu/libquadmath* /usr/lib/x86_64-linux-gnu/
-# COPY --from=0 /usr/lib/x86_64-linux-gnu/libgfortran* /usr/lib/x86_64-linux-gnu/
-COPY --from=0 /home/me/.local/ $HOME/.local
+COPY --from=0 /home/me/.local/ /usr/local
 RUN /bin/bash -c "lhapdf install NNPDF40_nnlo_as_01180 \
                                  ABMP16_5_nnlo \
                                  ATLASpdf21_T1 \

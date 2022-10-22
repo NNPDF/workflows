@@ -1,4 +1,4 @@
-FROM docker.io/python:3.9
+FROM docker.io/python:3.10
 
 # create a dedicated user
 RUN /bin/bash -c "apt update; \
@@ -29,7 +29,7 @@ RUN /bin/bash -c "cd pegasus; sh install.sh"
 
 # --------------------------------------------------------- #
 
-FROM docker.io/python:3.9-slim
+FROM docker.io/python:3.10-slim
 
 RUN /bin/bash -c "apt update; \
                   apt install -y git curl wget"
