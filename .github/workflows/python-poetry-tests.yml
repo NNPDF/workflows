@@ -60,7 +60,9 @@ jobs:
         run: poetry install --no-interaction --no-root --with test ${{ inputs.poetry-extras }}
         if: steps.cache.outputs.cache-hit != 'true'
       - name: Install project
-        run: poetry install --no-interaction
+        # it is required to repeat extras, otherwise they will be removed from
+        # the environment
+        run: poetry install --no-interaction ${{ inputs.poetry-extras }}
       - name: Install task runner
         run: pip install poethepoet
       - name: Lint with pylint
