@@ -27,7 +27,7 @@ FROM docker.io/python:3.10-slim
 # curl: required by snok/install-poetry@v1
 # git: required by actions/checkout@v2
 RUN /bin/bash -c "apt update; \ 
-                  apt install -y curl git"
+                  apt install -y curl git wget"
 
 RUN /bin/bash -c "useradd -m me"
 
