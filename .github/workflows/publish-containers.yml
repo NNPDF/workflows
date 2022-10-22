@@ -20,7 +20,7 @@ jobs:
         id: build
         uses: redhat-actions/buildah-build@v2
         with:
-          image: ghcr.io/n3pdf/${{ matrix.package }}
+          image: ${{ matrix.package }}
           tags: v2 ${{ github.ref_name }}
           containerfiles: |
             ./containers/${{ matrix.package }}/Containerfile
