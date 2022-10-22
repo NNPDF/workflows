@@ -30,8 +30,8 @@ jobs:
       - name: Downcase Owner
         run: |
           echo ${GITHUB_ENV}
-          echo "repository_owner=${${{ github.repository_owner }},,}"
-          echo "repository_owner=${${{ github.repository_owner }},,}" >> ${GITHUB_ENV}
+          echo "repository_owner=$(tr '[:upper:]' '[:lower:]' <<< ${{ github.repository_owner }})"
+          echo "repository_owner=$(tr '[:upper:]' '[:lower:]' <<< ${{ github.repository_owner }})" >> ${GITHUB_ENV}
           echo ${GITHUB_ENV}
           echo ${{ env.repository_owner }}
         # uses: redhat-actions/push-to-registry@v2
