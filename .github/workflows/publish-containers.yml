@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - "*"
+    branches:
+      - v2
 
 jobs:
   publish:
@@ -16,29 +18,31 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Buildah Build Image 🛠
-        id: build
-        uses: redhat-actions/buildah-build@v2
-        with:
-          image: ${{ matrix.package }}
-          tags: v2 ${{ github.ref_name }}
-          containerfiles: |
-            ./containers/${{ matrix.package }}/Containerfile
-          oci: true
+      # - name: Buildah Build Image 🛠
+      # id: build
+      # uses: redhat-actions/buildah-build@v2
+      # with:
+      # image: ${{ matrix.package }}
+      # tags: v2 ${{ github.ref_name }}
+      # containerfiles: |
+      # ./containers/${{ matrix.package }}/Containerfile
+      # oci: true
       - name: Downcase Owner
         run: |
           echo "repository_owner=${${{ github.repository_owner }},,}" >>${GITHUB_ENV}
-      - name: Push To GHCR ⬆
-        uses: redhat-actions/push-to-registry@v2
-        id: push
-        with:
-          image: ${{ steps.build.outputs.image }}
-          tags: ${{ steps.build.outputs.tags }}
-          registry: ghcr.io/${{ env.repository_owner }}
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-          extra-args: |
-            --disable-content-trust
+          echo ${GITHUB_ENV}
+          echo ${{ env.repository_owner }}
+        # uses: redhat-actions/push-to-registry@v2
+        # id: push
+        # with:
+        # image: ${{ steps.build.outputs.image }}
+        # tags: ${{ steps.build.outputs.tags }}
+        # registry: ghcr.io/${{ env.repository_owner }}
+        # username: ${{ github.actor }}
+        # password: ${{ github.token }}
+        # extra-args: |
+        # --disable-content-trust
+      # - name: Push To GHCR ⬆
       - name: Echo outputs
         run: |
           echo "${{ toJSON(steps.push.outputs) }}"
