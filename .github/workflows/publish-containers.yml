@@ -25,13 +25,16 @@ jobs:
           containerfiles: |
             ./containers/${{ matrix.package }}/Containerfile
           oci: true
+      - name: Downcase Owner
+        run: |
+          echo "repository_owner=${${{ github.repository_owner }},,}" >>${GITHUB_ENV}
       - name: Push To GHCR ⬆
         uses: redhat-actions/push-to-registry@v2
         id: push
         with:
           image: ${{ steps.build.outputs.image }}
           tags: ${{ steps.build.outputs.tags }}
-          registry: ghcr.io/${{ github.repository_owner }}
+          registry: ghcr.io/${{ env.repository_owner }}
           username: ${{ github.actor }}
           password: ${{ github.token }}
           extra-args: |
