@@ -6,7 +6,7 @@ ARG PREFIX=$HOME/local
 # create a dedicated user
 RUN /bin/bash -c "apt update; \
                   apt install -y wget patch autoconf libtool g++ gfortran make; \
-                  pip install numpy \
+                  pip install numpy; \
                   mkdir $HOME/local"
 
 COPY packages/lhapdf $HOME/lhapdf
