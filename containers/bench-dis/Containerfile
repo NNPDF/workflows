@@ -2,7 +2,7 @@ FROM docker.io/python:3.10
 
 # create a dedicated user
 RUN /bin/bash -c "apt update; \
-                  apt install -y wget patch autoconf libtool g++ gfortran make \
+                  apt install -y wget patch autoconf libtool g++ gfortran make; \
                   pip install numpy"
 
 COPY packages/lhapdf $HOME/lhapdf
@@ -28,3 +28,5 @@ ENV LD_LIBRARY_PATH=/usr/local/lib
 COPY --from=0 /usr/lib/x86_64-linux-gnu/libquadmath* /usr/lib/x86_64-linux-gnu/
 COPY --from=0 /usr/lib/x86_64-linux-gnu/libgfortran* /usr/lib/x86_64-linux-gnu/
 COPY --from=0 /usr/local /usr/local
+
+ENTRYPOINT /bin/bash

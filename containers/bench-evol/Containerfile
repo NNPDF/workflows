@@ -2,7 +2,7 @@ FROM docker.io/python:3.10
 
 # create a dedicated user
 RUN /bin/bash -c "apt update; \
-                  apt install -y wget patch autoconf libtool g++ gfortran make \
+                  apt install -y wget patch autoconf libtool g++ gfortran make; \
                   pip install numpy"
 
 COPY packages/lhapdf $HOME/lhapdf
