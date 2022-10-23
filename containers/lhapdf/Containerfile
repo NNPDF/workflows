@@ -5,6 +5,7 @@ RUN /bin/bash -c "apt update; \
                   apt install -y wget patch autoconf libtool g++ make; \
                   pip install numpy"
 
+ARG HOME=/root/
 COPY packages/lhapdf $HOME/lhapdf
 
 RUN /bin/bash -c "cd $HOME/lhapdf; sh install.sh"
