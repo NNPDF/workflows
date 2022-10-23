@@ -2,26 +2,16 @@ FROM docker.io/python:3.10
 
 # create a dedicated user
 RUN /bin/bash -c "apt update; \
-                  apt install -y wget patch autoconf libtool g++ gfortran make"
+                  apt install -y wget patch autoconf libtool g++ gfortran make \
+                  pip install numpy"
 
-RUN /bin/bash -c "useradd -m dis"
-
-USER dis
-ENV HOME=/home/dis
-WORKDIR $HOME
-
-RUN /bin/bash -c "pip install numpy"
-
-COPY --chown=dis packages/lhapdf $HOME/lhapdf
-COPY --chown=dis packages/apfel $HOME/apfel
-COPY --chown=dis packages/fonlldis $HOME/fonlldis
-COPY --chown=dis packages/qcdnum $HOME/qcdnum
-COPY --chown=dis packages/xspace-bench $HOME/xspace-bench
+COPY packages/lhapdf $HOME/lhapdf
+COPY packages/apfel $HOME/apfel
+COPY packages/fonlldis $HOME/fonlldis
+COPY packages/qcdnum $HOME/qcdnum
+COPY packages/xspace-bench $HOME/xspace-bench
 # TODO: remove this dirty trick
-COPY --chown=dis packages/.backup/ $HOME/.backup
-
-ENV PREFIX=$HOME/.local
-ENV PATH=$PATH:$HOME/.local/bin
+COPY packages/.backup/ $HOME/.backup
 
 RUN /bin/bash -c "cd lhapdf; sh install.sh"
 RUN /bin/bash -c "cd apfel; sh install.sh"
@@ -37,4 +27,4 @@ ENV LD_LIBRARY_PATH=/usr/local/lib
 
 COPY --from=0 /usr/lib/x86_64-linux-gnu/libquadmath* /usr/lib/x86_64-linux-gnu/
 COPY --from=0 /usr/lib/x86_64-linux-gnu/libgfortran* /usr/lib/x86_64-linux-gnu/
-COPY --from=0 /home/dis/.local/ /usr/local
+COPY --from=0 /usr/local /usr/local
