@@ -1,11 +1,13 @@
 FROM docker.io/python:3.10
 
+ARG HOME=/root
+ARG PREFIX=$HOME/local
+
 # create a dedicated user
 RUN /bin/bash -c "apt update; \
                   apt install -y wget patch autoconf libtool g++ make; \
-                  pip install numpy"
+                  mkdir $HOME/local"
 
-ARG HOME=/root/
 COPY packages/lhapdf $HOME/lhapdf
 
 RUN /bin/bash -c "cd $HOME/lhapdf; sh install.sh"
@@ -21,8 +23,12 @@ FROM docker.io/python:3.10-slim
 RUN /bin/bash -c "apt update; \ 
                   apt install -y curl git wget"
 
-COPY --from=0 /usr/local /usr/local
+COPY --from=0 /root/local/bin/ /usr/local/bin/
+COPY --from=0 /root/local/lib/ /usr/local/lib/
+COPY --from=0 /root/local/share/ /usr/local/share/
+
 ENV LD_LIBRARY_PATH=/usr/local/lib/
+ENV LHAPDF_DATA_PATH=/usr/local/share/LHAPDF/
 
 RUN /bin/bash -c "lhapdf install NNPDF40_nnlo_as_01180 \
                                  ABMP16_5_nnlo \
