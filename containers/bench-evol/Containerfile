@@ -12,10 +12,10 @@ COPY packages/pegasus $HOME/pegasus
 # TODO: remove this dirty trick
 COPY packages/.backup/ $HOME/.backup
 
-RUN /bin/bash -c "cd lhapdf; sh install.sh"
-RUN /bin/bash -c "cd apfel; sh install.sh"
-RUN /bin/bash -c "cd qcdnum; sh install.sh"
-RUN /bin/bash -c "cd pegasus; sh install.sh"
+RUN /bin/bash -c "cd $HOME/lhapdf; sh install.sh"
+RUN /bin/bash -c "cd $HOME/apfel; sh install.sh"
+RUN /bin/bash -c "cd $HOME/qcdnum; sh install.sh"
+RUN /bin/bash -c "cd $HOME/pegasus; sh install.sh"
 
 # --------------------------------------------------------- #
 
@@ -27,5 +27,6 @@ RUN /bin/bash -c "apt update; \
 COPY --from=0 /usr/lib/x86_64-linux-gnu/libquadmath* /usr/lib/x86_64-linux-gnu/
 COPY --from=0 /usr/lib/x86_64-linux-gnu/libgfortran* /usr/lib/x86_64-linux-gnu/
 COPY --from=0 /usr/local /usr/local
+ENV LD_LIBRARY_PATH=/usr/local/lib/
 
 ENTRYPOINT /bin/bash

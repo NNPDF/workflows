@@ -13,20 +13,19 @@ COPY packages/xspace-bench $HOME/xspace-bench
 # TODO: remove this dirty trick
 COPY packages/.backup/ $HOME/.backup
 
-RUN /bin/bash -c "cd lhapdf; sh install.sh"
-RUN /bin/bash -c "cd apfel; sh install.sh"
-RUN /bin/bash -c "cd fonlldis; sh install.sh"
-RUN /bin/bash -c "cd qcdnum; sh install.sh"
-RUN /bin/bash -c "cd xspace-bench; sh install.sh"
+RUN /bin/bash -c "cd $HOME/lhapdf; sh install.sh"
+RUN /bin/bash -c "cd $HOME/apfel; sh install.sh"
+RUN /bin/bash -c "cd $HOME/fonlldis; sh install.sh"
+RUN /bin/bash -c "cd $HOME/qcdnum; sh install.sh"
+RUN /bin/bash -c "cd $HOME/xspace-bench; sh install.sh"
 
 # --------------------------------------------------------- #
 
 FROM docker.io/python:3.10-slim
 
-ENV LD_LIBRARY_PATH=/usr/local/lib
-
 COPY --from=0 /usr/lib/x86_64-linux-gnu/libquadmath* /usr/lib/x86_64-linux-gnu/
 COPY --from=0 /usr/lib/x86_64-linux-gnu/libgfortran* /usr/lib/x86_64-linux-gnu/
 COPY --from=0 /usr/local /usr/local
+ENV LD_LIBRARY_PATH=/usr/local/lib/
 
 ENTRYPOINT /bin/bash

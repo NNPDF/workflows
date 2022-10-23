@@ -7,7 +7,7 @@ RUN /bin/bash -c "apt update; \
 
 COPY packages/lhapdf $HOME/lhapdf
 
-RUN /bin/bash -c "cd lhapdf; sh install.sh"
+RUN /bin/bash -c "cd $HOME/lhapdf; sh install.sh"
 
 # --------------------------------------------------------- #
 
@@ -21,6 +21,8 @@ RUN /bin/bash -c "apt update; \
                   apt install -y curl git wget"
 
 COPY --from=0 /usr/local /usr/local
+ENV LD_LIBRARY_PATH=/usr/local/lib/
+
 RUN /bin/bash -c "lhapdf install NNPDF40_nnlo_as_01180 \
                                  ABMP16_5_nnlo \
                                  ATLASpdf21_T1 \
