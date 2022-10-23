@@ -9,6 +9,10 @@ RUN /bin/bash -c "apt update; \
                   pip install numpy; \
                   mkdir $HOME/local"
 
+ENV PATH=$HOME/local/bin/:$PATH
+ENV CPATH=$HOME/local/include/:$CPATH
+ENV LD_LIBRARY_PATH=$HOME/local/lib/:$LD_LIBRARY_PATH
+
 COPY packages/lhapdf $HOME/lhapdf
 COPY packages/apfel $HOME/apfel
 COPY packages/qcdnum $HOME/qcdnum
