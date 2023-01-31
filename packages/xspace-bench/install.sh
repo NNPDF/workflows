@@ -23,9 +23,12 @@ done
 
 make
 
+# compile and install python interface
+if [ -f $PREFIX/bin/activate ]; then
+  # if prefix specified and environment executable, activate it
+  . $PREFIX/bin/activate
+fi
 cd pyWrap
 # activate your environment, so f2py already points to the correct thing
 sh f2py.sh
 pip install .
-
-exit
