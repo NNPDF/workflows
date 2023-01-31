@@ -16,7 +16,7 @@ cd $SRC_DIR
 # reconfigure
 autoreconf -f -i
 # if PREFIX is set use it, otherwise do the default
-if [ -z $PREFIX ]; then
+if [ -f $PREFIX ]; then
   PYTHON=$(which python3) ./configure
 else
   echo "Installing in $PREFIX"

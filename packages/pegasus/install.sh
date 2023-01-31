@@ -26,7 +26,7 @@ sh G77-obj
 cd ..
 
 # compile and install python interface
-if [ -z $PREFIX/bin/activate ]; then
+if [ -f $PREFIX/bin/activate ]; then
   # if prefix specified and environment executable, activate it
   . $PREFIX/bin/activate
 fi
