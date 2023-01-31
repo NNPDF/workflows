@@ -1,7 +1,7 @@
-diff --git a/packages/pegasus/Pegasus/Routines/initevol.f b/packages/pegasus/Pegasus/Routines/initevol.f
+diff --git a/Routines/initevol.f b/Routines/initevol.f
 index 43dcf7d..9a531ac 100644
---- a/packages/pegasus/Pegasus/Routines/initevol.f
-+++ b/packages/pegasus/Pegasus/Routines/initevol.f
+--- a/Routines/initevol.f
++++ b/Routines/initevol.f
 @@ -21,7 +21,8 @@
  * =====================================================================
  *
@@ -41,10 +41,10 @@ index 43dcf7d..9a531ac 100644
  *
  * ..Override these values by reading the file  usrinit.dat (for IPAR=1)
  *    or by calling the subroutine  USRINIT (for IPAR=2)
-diff --git a/packages/pegasus/Pegasus/Routines/initinp.f b/packages/pegasus/Pegasus/Routines/initinp.f
+diff --git a/Routines/initinp.f b/Routines/initinp.f
 index 680208c..45609b7 100644
---- a/packages/pegasus/Pegasus/Routines/initinp.f
-+++ b/packages/pegasus/Pegasus/Routines/initinp.f
+--- a/Routines/initinp.f
++++ b/Routines/initinp.f
 @@ -22,12 +22,14 @@
  * =====================================================================
  *
@@ -81,10 +81,10 @@ index 680208c..45609b7 100644
  *
  * ...Flags for the initial parton distributions
  *
-diff --git a/packages/pegasus/Pegasus/Routines/initpinp.f b/packages/pegasus/Pegasus/Routines/initpinp.f
+diff --git a/Routines/initpinp.f b/Routines/initpinp.f
 index afa97dc..432f9ae 100644
---- a/packages/pegasus/Pegasus/Routines/initpinp.f
-+++ b/packages/pegasus/Pegasus/Routines/initpinp.f
+--- a/Routines/initpinp.f
++++ b/Routines/initpinp.f
 @@ -22,12 +22,14 @@
  * =====================================================================
  *
@@ -122,10 +122,10 @@ index afa97dc..432f9ae 100644
  *
  * ...Flags for the initial parton distributions
  *
-diff --git a/packages/pegasus/Pegasus/Routines/initpol.f b/packages/pegasus/Pegasus/Routines/initpol.f
+diff --git a/Routines/initpol.f b/Routines/initpol.f
 index a92cd90..378b3dd 100644
---- a/packages/pegasus/Pegasus/Routines/initpol.f
-+++ b/packages/pegasus/Pegasus/Routines/initpol.f
+--- a/Routines/initpol.f
++++ b/Routines/initpol.f
 @@ -20,7 +20,8 @@
  * =====================================================================
  *
