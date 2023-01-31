@@ -73,6 +73,29 @@ python module pegasus ! in
             common /beta/ beta0,beta1,beta2,beta3
             !! fortranname as
         end function as
+        subroutine initpol(ipar, myimodev, mynpord, myivfns, mynff, myfr2) ! in :pegasus:Routines/initpol.f
+            integer, intent(hide) :: ipar=3
+            integer intent(in) :: myimodev
+            integer intent(in) :: mynpord
+            integer intent(in) :: myivfns
+            integer intent(in) :: mynff
+            double precision intent(in) :: myfr2
+            !! integer optional,intent(in) :: naord = npord
+        end subroutine initpol
+        subroutine initpinp(ipar, asi, q20, m2c, m2b, m2t) ! in :pegasus:Routines/initpinp.f
+            integer, intent(hide) :: ipar=3 
+            !! integer intent(in) :: ivfns
+            !! integer intent(in) :: nff
+            !! double precision intent(in) :: logfr
+            double precision intent(in) :: asi
+            double precision intent(in) :: q20
+            !! double precision intent(in) :: asc
+            double precision intent(in) :: m2c
+            !! double precision intent(in) :: asb
+            double precision intent(in) :: m2b
+            !! double precision intent(in) :: ast
+            double precision intent(in) :: m2t
+        end subroutine initpinp
     end interface 
 end python module pegasus
 
