@@ -14,6 +14,12 @@ on:
         required: false
         description: >
           Extras to be installed, in poetry format (e.g. "-E extra1 extra2")
+      run-tests:
+        type: boolean
+        default: true
+        required: false
+        description: >
+          Switch on/off tests before building the package
     secrets:
       PYPI_TOKEN:
         required: true
@@ -62,6 +68,7 @@ jobs:
       - name: Test
         run: |
           # run tests just before deployment
+          if: ${{ inputs.run-tests == true }}
           poe test
       - name: Package the distribution
         run: |
