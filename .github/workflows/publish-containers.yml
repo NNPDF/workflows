@@ -15,7 +15,7 @@ jobs:
         package: ["lhapdf", "bench-evol", "bench-dis"]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Buildah Build Image 🛠
         id: build
         uses: redhat-actions/buildah-build@v2
