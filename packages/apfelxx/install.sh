@@ -23,4 +23,4 @@ else
 fi
 
 # compile, and install (includes python interface)
-make && make install
+make -j && make install
