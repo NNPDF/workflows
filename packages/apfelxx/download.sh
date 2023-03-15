@@ -1,3 +1,4 @@
 URL=$1
+TARBALL=$2
 
-git clone $URL
+wget $URL -O $TARBALL

@@ -7,9 +7,10 @@ INSTALLER_DIR=$(realpath $(dirname $0))
 . $INSTALLER_DIR/variables.sh
 
 # download the code
-sh $INSTALLER_DIR/download.sh $URL
+sh $INSTALLER_DIR/download.sh $URL $TARBALL
 
 # extract code
+tar -xvzf $TARBALL
 cd $SRC_DIR
 rm -rf build
 mkdir build && cd build
