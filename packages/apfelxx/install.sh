@@ -10,8 +10,7 @@ INSTALLER_DIR=$(realpath $(dirname $0))
 sh $INSTALLER_DIR/download.sh $URL $TARBALL
 
 # extract code
-mkdir $SRC_DIR
-tar -xvzf $TARBALL --strip 1 -C $SRC_DIR
+tar -xvzf $TARBALL
 cd $SRC_DIR
 rm -rf build
 mkdir build && cd build
