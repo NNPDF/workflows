@@ -1,5 +1,5 @@
 BRANCH="resummation-scales"
 VERSION="00238cd"
 URL="https://github.com/vbertone/apfelxx/tarball/$VERSION"
-TARBALL="apfelxx-$BRANCH.tar.gz"
+TARBALL="apfelxx-$VERSION.tar.gz"
 SRC_DIR="vbertone-apfelxx-$VERSION"
