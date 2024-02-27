@@ -15,9 +15,17 @@
       systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
       debug = true;
 
-      perSystem = {config, ...}: {
+      perSystem = {
+        config,
+        pkgs,
+        ...
+      }: {
         devenv.shells.default = {
-          packages = with config.packages; [
+          packages = with pkgs; [
+            autoconf
+            automake
+            libtool
+            python311Packages.pybind11
             # apfel
           ];
         };
