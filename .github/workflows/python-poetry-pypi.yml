@@ -25,13 +25,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # tags needed for dynamic versioning
           fetch-depth: 0
       - name: Set up Python ${{ inputs.python-version }} 🐍
         id: setup-python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python-version }}
       - name: Install and configure Poetry
@@ -40,7 +40,7 @@ jobs:
           virtualenvs-path: ~/.virtualenvs
           installer-parallel: true
       - name: Cache Poetry virtualenv
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache
         with:
           path: ~/.virtualenvs
